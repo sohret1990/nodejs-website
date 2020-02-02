@@ -1,0 +1,78 @@
+<div class="card card-bordered style-primary">
+    <div class="card-head">
+        <div class="tools">
+            <div class="btn-group">
+                <a onclick="ReloadTable();" class="btn btn-icon-toggle btn-refresh"><i class="md md-refresh"></i></a>
+                <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
+                <!-- <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a> -->
+            </div>
+        </div>
+        <header><i class="fa fa-fw fa-tag"></i> <%- title -%></header>
+    </div>
+    <!--end .card-head -->
+    <div class="card-body style-default-bright">
+        <table id="tblCats" class="table table-condensed">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        <button type="button" class="btn btn-outline-primary"><i class="fa fa-plus"></i></button>
+                    </th>
+                    <th>Bölmə</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <!--end .card-body -->
+</div>
+
+
+<script>
+    let dtCategories = [];
+    $(document).ready(function () {
+        dtCategories = $('#tblCats').DataTable({
+            "columnDefs": [
+                { "width": "120px", "targets": 0 }
+            ],
+            "paging": true,
+            "pagingType": "full_numbers",
+            "pageLength": 10,
+            "processing": true,
+            "serverSide": true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'excel', 'pdf'
+            ],
+            "ajax": {
+                "data": "json",
+                'dataSrc': '',
+                "type": "GET",
+                "url": "/category/LoadCategoryJsonList"
+            },
+            "columns":
+                [
+                    {
+                        "data": function (data) {
+                            let id = data._id;
+                            console.log(id)
+                            return '<button type="button" onclick="GoToCategoryEditPage(\''+data.id+'\');" class="btn btn-outline-success"><i class="fa fa-pencil"></i></button>&nbsp; <button onclick="ShowConfirm();" type="button" class="btn btn-outline-success"><i class="fa fa-remove"></i></button>';
+                        }
+                    },
+                    { "data": "name", orderable:false }
+                ]
+        });
+    });
+
+    function ReloadTable() {
+        $(dtCategories).reload();
+    }
+
+    function ShowConfirm(){
+        $('#confirmModal').modal('show');
+    }
+
+    function GoToCategoryEditPage(id){
+        console.log(id);
+        window.location.href = '/category/edit?id='+id;
+    }
+
+</script>
